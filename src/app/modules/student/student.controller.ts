@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StudentsServices } from './student.service';
 
 const createStudent = async (req: Request, res: Response) => {
@@ -21,7 +21,7 @@ const createStudent = async (req: Request, res: Response) => {
   }
 };
 
-//ge students
+//get students
 const getAllStudents = async (req: Request, res: Response) => {
   try {
     const result = await StudentsServices.getAllStudentsFromDB();
@@ -36,6 +36,8 @@ const getAllStudents = async (req: Request, res: Response) => {
   }
 };
 
+
+//get single students
 const getSingleStudent = async (req: Request, res: Response) => {
   try {
     const {stuID}=req.params;
@@ -50,8 +52,25 @@ const getSingleStudent = async (req: Request, res: Response) => {
   }
 };
 
+const deleteStudent = async (req: Request,res: Response,next: NextFunction) => {
+  try {
+    const { studentId } = req.params;
+    const result = await StudentsServices.deleteStudentFromDB(studentId);
+    res.status(400).json({
+      success: true,
+      message: ' specific students deleted   successfully',
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+
 export const StudentController = {
   createStudent,
   getAllStudents,
   getSingleStudent,
+  deleteStudent
 };
