@@ -20,7 +20,9 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   userData.role = 'student';
 
   //manually generated id
-  userData.id = '20300000254324';
+  const generateId = () => Math.random().toString(36).substr(2, 9);
+  const id = generateId();
+  userData.id = id;
 
   //status
   userData.status='in-progress';
