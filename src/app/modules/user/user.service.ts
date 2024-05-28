@@ -1,12 +1,15 @@
 import config from '../../config';
 import { TAcademicSemester } from '../academinSemester/academicSemester.interface';
+
+import { AcademicSemester } from '../academinSemester/academicSemester.model';
 import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
+import { generateStudentId } from './user.utils';
 
 //post
-const createStudentIntoDB = async (password: string, studentData: TStudent) => {
+const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // create a user object
   let userData: Partial<TUser> = {}; //partially use TUSer
 
@@ -20,16 +23,15 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   //set student role
   userData.role = 'student';
 
-  //manually generated id
-  const generateId = () => Math.random().toString(36).substr(2, 9);
-  const id = generateId();
-  userData.id = id;
-
-  // //year semesterCode 4digit
-  // const generateStudentId=(payload:TAcademicSemester)=>{
-
-  // }
-  // userData.id=generateStudentId()
+  //find academic semester info and set userData id
+  const admissionSemester = await AcademicSemester.findById(
+    payload.admissionSemester,
+  );
+  if (admissionSemester) {
+    userData.id = await generateStudentId(admissionSemester); //set data
+  } else {
+    throw new Error('Academic semester not found');
+  }
 
   //status
   userData.status = 'in-progress';
@@ -41,10 +43,10 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   if (Object.keys(newUser).length) {
     //set id, _id as a user
     //referencing
-    studentData.id = newUser.id;
-    studentData.user = newUser._id;
+    payload.id = newUser.id;
+    payload.user = newUser._id;
 
-    const newStudent = await Student.create(studentData);
+    const newStudent = await Student.create(payload);
     return newStudent;
   }
 };
