@@ -20,7 +20,13 @@ export type TMonths =
 export type TAcademicSemester = {
   name:  TAcademicSemesterName;
   code: TAcademicSemesterCode;
-  year: Date;
+  year: string;
   startMonth: TMonths;
   endMonth: TMonths;
 };
+
+
+   //academic name and semeseter code same validation
+  export type TAcademicSemesterNameCodeMapper={
+    [key:string]:string;
+}
