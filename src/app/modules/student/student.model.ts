@@ -6,7 +6,7 @@ import {
   TStudent,
   TUserName,
 } from './student.interface';
-import config from '../../config';
+// import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -86,7 +86,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: Schema.Types.ObjectId,
       required: [true, 'User id is required'],
       unique: true,
-      ref: 'User',//user er sathe angta lagbe
+      ref: 'User', //user er sathe angta lagbe
     },
     name: {
       type: userNameSchema,
@@ -136,10 +136,9 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     },
     profileImg: { type: String },
     admissionSemester: {
-       type: Schema.Types.ObjectId,
-       ref:'AcademicSemester'
-
-       },
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicSemester',
+    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -152,8 +151,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
   },
 );
 
- 
- 
 //creating a custom static method
 studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });

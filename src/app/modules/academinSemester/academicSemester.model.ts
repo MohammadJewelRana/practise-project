@@ -1,13 +1,11 @@
- 
 import { Schema, model } from 'mongoose';
+import { TAcademicSemester } from './academicSemester.interface';
 import {
-  TAcademicSemester,
+  AcademicSemesterCode,
+  AcademicSemesterName,
+  Months,
+} from './academicSemester.constant';
 
-} from './academicSemester.interface';
-import { AcademicSemesterCode, AcademicSemesterName, Months } from './academicSemester.constant';
- 
-
- 
 const academicSemesterSchema = new Schema<TAcademicSemester>(
   {
     name: {
@@ -40,12 +38,11 @@ const academicSemesterSchema = new Schema<TAcademicSemester>(
   },
 );
 
-
 //pre middleware
 //is semester exists
 academicSemesterSchema.pre('save', async function (next) {
   const isSemesterExists = await AcademicSemester.findOne({
-    year: this.year,//this uses for new document
+    year: this.year, //this uses for new document
     name: this.name,
   });
 
@@ -59,5 +56,3 @@ export const AcademicSemester = model<TAcademicSemester>(
   'AcademicSemester',
   academicSemesterSchema,
 );
-
- 

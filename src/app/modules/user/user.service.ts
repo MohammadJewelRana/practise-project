@@ -1,5 +1,4 @@
 import config from '../../config';
-import { TAcademicSemester } from '../academinSemester/academicSemester.interface';
 
 import { AcademicSemester } from '../academinSemester/academicSemester.model';
 import { TStudent } from '../student/student.interface';
@@ -11,7 +10,7 @@ import { generateStudentId } from './user.utils';
 //post
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // create a user object
-  let userData: Partial<TUser> = {}; //partially use TUSer
+  const userData: Partial<TUser> = {}; //partially use TUSer
 
   //if password is not given use default pass
   if (!password) {
