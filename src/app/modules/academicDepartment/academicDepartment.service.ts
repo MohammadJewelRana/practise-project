@@ -7,7 +7,7 @@ const createAcademicDepartmentIntoDB = async (payload: TAcademicDepartment) => {
 };
 
 const getAllAcademicDepartmentsFromDB = async () => {
-  const result = await AcademicDepartment.find().populate('academicFaculty');
+  const result = await AcademicDepartment.find().populate('academicFaculty');//here academicFaculty is a property name in the model which was referencing..
   return result;
 };
 

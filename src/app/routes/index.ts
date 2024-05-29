@@ -13,10 +13,7 @@ const moduleRoutes = [
   { path: '/students', route: StudentsRoutes },
   { path: '/academic-semesters', route: AcademicSemesterRoutes },
   { path: '/academic-faculty', route: AcademicFacultyRoutes },
-  {path: '/academic-departments',route: AcademicDepartmentRoutes},
-
-
-  
+  { path: '/academic-departments', route: AcademicDepartmentRoutes },
 ];
 
 //just looping the routes
