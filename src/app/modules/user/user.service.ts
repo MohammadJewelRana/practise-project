@@ -70,6 +70,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     // console.log(error);
     await session.abortTransaction();
     await session.endSession();
+    throw new Error(error);
   }
 };
 

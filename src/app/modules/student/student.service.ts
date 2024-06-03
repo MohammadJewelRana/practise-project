@@ -4,21 +4,39 @@ import { AppError } from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
+import QueryBuilder from '../../builders/QueryBuilder';
+import { studentSearchableFields } from './student.constsant';
 // import StudentModel from './student.model';
 
 //get
-const getAllStudentsFromDB = async () => {
-  const result = await Student.find()
-    .populate('admissionSemester') //single populate
-    .populate({
-      path: 'academicDepartment', //academic department er vitore academic faculty referncing ache seta populate
-      populate: {
-        path: 'academicFaculty',
-      },
-    });
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+ 
+  //query execute from the builders
+  //pass parameter model(Student.find()   and query from req.query)
+  const studentQuery = new QueryBuilder(
+    Student.find()
+      .populate('admissionSemester')
+      .populate({
+        path: 'academicDepartment',
+        populate: {
+          path: 'academicFaculty',
+        },
+      }),
+    query,
+  )
+    .search(studentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  
+
+  //model query te sob query build hoye gese tai await kore model query k call
+  const result = await studentQuery.modelQuery;
   return result;
 };
 
+ 
 //get single students
 const getSingleStudentsFromDB = async (stuID: string) => {
   const result = await Student.findOne({ id: stuID })
@@ -40,7 +58,7 @@ const updateSingleStudentsFromDB = async (
   //non primitive alada
   const { name, guardian, localGuardian, ...remainingStudentData } = payload;
 
-  //new data set 
+  //new data set
   //first kept primitive data
   const modifiedUpdatedData: Record<string, unknown> = {
     ...remainingStudentData,
@@ -65,9 +83,13 @@ const updateSingleStudentsFromDB = async (
     }
   }
 
-  const result = await Student.findOneAndUpdate({ id: stuID }, modifiedUpdatedData, {
-    new: true,
-  });
+  const result = await Student.findOneAndUpdate(
+    { id: stuID },
+    modifiedUpdatedData,
+    {
+      new: true,
+    },
+  );
 
   return result;
 };
