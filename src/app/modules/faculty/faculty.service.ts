@@ -50,7 +50,7 @@ const updateFacultyIntoDB = async (
 
   //when use self created id then use updateOne
   const result = await Faculty.findOneAndUpdate(
-    { facultyID },
+    { id:facultyID },
     { $set: modifiedUpdatedData },
     {
       new: true,
