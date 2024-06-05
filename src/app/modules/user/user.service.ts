@@ -8,7 +8,7 @@ import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import { generateStudentId } from './user.utils';
+import { generateFacultyId, generateStudentId } from './user.utils';
 import { AppError } from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { Faculty } from '../faculty/faculty.model';
@@ -71,7 +71,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     await session.commitTransaction(); //write complete
     await session.endSession(); //end
     return newStudent;
-  } catch (error:any) {
+  } catch (error: any) {
     // console.log(error);
     await session.abortTransaction();
     await session.endSession();
@@ -111,7 +111,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   try {
     session.startTransaction();
 
-    userData.id = '541';
+    userData.id = await generateFacultyId();
 
     //transaction 1
     const newUser = await User.create([userData], { session });
@@ -119,8 +119,8 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
       throw new AppError(httpStatus.BAD_REQUEST, 'failed to create new user');
     }
 
-    payload.id = newUser[0].id;
-    payload.user = newUser[0]._id;
+    payload.id = newUser[0].id;//generated faculty id
+    payload.user = newUser[0]._id;//referencing user _id to faculty user field
 
     //transaction 2
     const newFaculty = await Faculty.create([payload], { session });
@@ -134,7 +134,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     await session.commitTransaction(); //write complete
     await session.endSession(); //end
     return newFaculty;
-  } catch (error:any) {
+  } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
     throw new Error(error);

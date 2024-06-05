@@ -9,7 +9,7 @@ const facultyNameSchema = z.object({
 
 const createFacultyValidationSchema = z.object({
   body:z.object({
-    password: z.string().max(20),
+    password: z.string().max(20).optional(),
     faculty:z.object({
         id: z.string(),
         user: z.string().refine((value) => /^[a-f\d]{24}$/i.test(value), {
