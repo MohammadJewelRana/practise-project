@@ -7,6 +7,9 @@ import { AcademicDepartmentRoutes } from '../modules/academicDepartment/academic
 import { FacultyRoutes } from '../modules/faculty/faculty.route';
 import { AdminRoutes } from '../modules/admin/admin.route';
 import { CourseRoutes } from '../modules/course/course.route';
+import { semesterRegistrationRoutes } from '../modules/semesterRegistration/semesterRegistration.routes';
+import { offeredCourseRoutes } from '../modules/offeredCourse/offeredCourse.routes';
+import { AuthRoutes } from '../modules/auth/auth.route';
 
 const router = Router();
 
@@ -20,6 +23,14 @@ const moduleRoutes = [
   { path: '/faculties', route: FacultyRoutes },
   { path: '/admins', route: AdminRoutes },
   { path: '/courses', route: CourseRoutes },
+  {path: '/semester-registrations',route: semesterRegistrationRoutes,},
+  {path: '/offered-courses',route: offeredCourseRoutes},
+  {path: '/auth',route: AuthRoutes},
+
+ 
+
+
+
 ];
 
 //just looping the routes
