@@ -12,4 +12,9 @@ router.post('/login',validateRequest(AuthValidation.loginValidationSchema),AuthC
 
 router.post('/change-password',auth(USER_ROLE.admin,USER_ROLE.student,USER_ROLE.faculty),validateRequest(AuthValidation.changePasswordValidationSchema),AuthControllers.changePassword)
 
+
+// router.post('/refresh-token',AuthControllers.refreshToken)
+
+router.post('/refresh-token',validateRequest(AuthValidation.refreshTokenValidationSchema),AuthControllers.refreshToken)
+
 export const AuthRoutes   =router;  

@@ -4,6 +4,7 @@ import cors from 'cors';
 import globalErrorHandler from './middleware/globalErrorHandler';
 import notFound from './middleware/notFound';
 import router from './routes';
+import cookieParser from 'cookie-parser';
 
 const app: Application = express();
 
@@ -11,6 +12,7 @@ const app: Application = express();
 app.use(express.json());
 app.use(cors());
 app.use(express.text());
+app.use(cookieParser());
 
 //application routes
 // app.use('/api/v1/students',StudentsRoutes)//go which routes identify

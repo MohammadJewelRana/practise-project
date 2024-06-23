@@ -6,6 +6,10 @@ import { FacultyServices } from './faculty.service';
 const getAllFaculty = catchAsync(async (req, res) => {
   // console.log('test',req.user);
 
+  // console.log(req.cookies);
+  
+
+ 
   const result = await FacultyServices.getAllFacultyFromDB(req.body);
 
   sendResponse(res, {
