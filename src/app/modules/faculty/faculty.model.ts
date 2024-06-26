@@ -92,7 +92,7 @@ const facultySchema = new Schema<TFaculty>(
       type: Boolean,
       default: false,
     },
-  },
+  }, 
   {
     toJSON: {
       virtuals: true,

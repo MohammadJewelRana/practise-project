@@ -3,27 +3,28 @@ import { catchAsync } from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { AuthService } from './auth.service';
 import config from '../../config';
+import { AppError } from '../../errors/AppError';
 
 const loginUser = catchAsync(async (req, res) => {
   const result = await AuthService.loginUserFromDB(req.body);
 
-  const {refreshToken,accessToken,needsPasswordChange}=result;
+  const { refreshToken, accessToken, needsPasswordChange } = result;
 
-  res.cookie('refreshToken',refreshToken,{
-    secure:config.NODE_ENV==='production',
-    httpOnly:true
-  })
+  res.cookie('refreshToken', refreshToken, {
+    secure: config.NODE_ENV === 'production',
+    httpOnly: true,
+  });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'User is logged in successfully',
-    data: {accessToken,needsPasswordChange},
+    data: { accessToken, needsPasswordChange },
   });
 });
 
 const changePassword = catchAsync(async (req, res) => {
-  console.log(req.user, req.body);
+  // console.log(req.user, req.body);
 
   const { ...passwordData } = req.body;
 
@@ -37,28 +38,52 @@ const changePassword = catchAsync(async (req, res) => {
   });
 });
 
+const refreshToken = catchAsync(async (req, res) => {
+  const { refreshToken } = req.cookies;
+  // console.log(refreshToken);
 
-const refreshToken=catchAsync(async(req,res)=>{
+  const result = await AuthService.refreshToken(refreshToken);
 
-    const {refreshToken}=req.cookies;
-    console.log(refreshToken);
-    
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'access token retrieved successfully',
+    data: result,
+  });
+});
 
+const forgetPassword = catchAsync(async (req, res) => {
+  const userId = req.body.id;
+  const result = await AuthService.forgetPassword(userId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Reset link is generated successfully!',
+    data: result,
+  });
+});
 
-    const result = await AuthService.refreshToken(refreshToken);
+const resetPassword = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
 
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'access token retrieved successfully',
-      data:result,
-    });
-
-})
+  if(!token){
+    throw new AppError(httpStatus.FORBIDDEN,'Token is not found');
+  }
+  const result = await AuthService.resetPassword(req.body, token);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Password reset successful!',
+    data: result,
+  });
+});
 
 
 export const AuthControllers = {
   loginUser,
   changePassword,
-  refreshToken
+  refreshToken,
+  forgetPassword,
+  resetPassword,
+
 };
