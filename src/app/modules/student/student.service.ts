@@ -40,7 +40,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
  
 //get single students
 const getSingleStudentsFromDB = async (stuID: string) => {
-  const result = await Student.findOne({ id: stuID })
+  const result = await Student.findById({ _id: stuID })
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment', //academic department er vitore academic faculty referncing ache seta populate

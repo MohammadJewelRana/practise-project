@@ -3,6 +3,7 @@ import { Schema, model } from 'mongoose';
 import { TUser } from './user.interface';
 import config from '../../config';
 import bcrypt from 'bcrypt';
+import { UserStatus } from './user.constant';
 
 const userSchema = new Schema<TUser>(
   {
@@ -12,7 +13,7 @@ const userSchema = new Schema<TUser>(
     needsPasswordChange: { type: Boolean, default: true },
     passwordChangedAt:{type:Date},
     role: { type: String, enum: ['student', 'faculty', 'admin'] },
-    status: { type: String, enum: ['in-progress', 'blocked'] },
+    status: { type: String, enum: UserStatus },
     isDeleted: { type: Boolean, default: false },
   },
   {
