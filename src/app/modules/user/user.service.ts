@@ -8,7 +8,11 @@ import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import { generateAdminId, generateFacultyId, generateStudentId } from './user.utils';
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from './user.utils';
 import { AppError } from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { Faculty } from '../faculty/faculty.model';
@@ -16,9 +20,14 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { AcademicFaculty } from '../academicFaculty/academicFaculty.model';
 import { Admin } from '../admin/admin.model';
 import { TAdmin } from '../admin/admin.interface';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
 //post
-const createStudentIntoDB = async (password: string, payload: TStudent) => {
+const createStudentIntoDB = async (
+  password: string,
+  payload: TStudent,
+  file: any,
+) => {
   // create a user object
   const userData: Partial<TUser> = {}; //partially use TUSer
 
@@ -31,23 +40,28 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
   //set student role
   userData.role = 'student';
-  userData.email=payload.email;
+  userData.email = payload.email;
 
   //find academic semester info and set userData id
   const admissionSemester = await AcademicSemester.findById(
     payload.admissionSemester,
   );
+  if (!admissionSemester) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'admission semester not found');
+  }
 
   //create session
   const session = await mongoose.startSession();
 
   try {
     session.startTransaction(); //start the session
-    if (admissionSemester) {
-      userData.id = await generateStudentId(admissionSemester); //set data
-    } else {
-      throw new Error('Academic semester not found');
-    }
+
+    userData.id = await generateStudentId(admissionSemester); //set data
+
+    const imageName = `${userData.id}${payload?.name?.firstName}`;
+    const path = file?.path;
+    const { secure_url } = await sendImageToCloudinary(imageName, path);
+
     userData.status = 'in-progress';
 
     //create a user in user collection
@@ -62,6 +76,9 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     //referencing
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
+
+    //set image url
+    payload?.profileImg = secure_url;
 
     //create a student
     //transaction 2
@@ -95,7 +112,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   //set faculty role
   userData.role = 'faculty';
   userData.status = 'in-progress';
-  userData.email=payload.email;
+  userData.email = payload.email;
 
   const academicDepartment = await AcademicDepartment.findById(
     payload.academicDepartment,
@@ -123,8 +140,8 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
       throw new AppError(httpStatus.BAD_REQUEST, 'failed to create new user');
     }
 
-    payload.id = newUser[0].id;//generated faculty id
-    payload.user = newUser[0]._id;//referencing user _id to faculty user field
+    payload.id = newUser[0].id; //generated faculty id
+    payload.user = newUser[0]._id; //referencing user _id to faculty user field
 
     //transaction 2
     const newFaculty = await Faculty.create([payload], { session });
@@ -154,7 +171,7 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
 
   //set student role
   userData.role = 'admin';
-  userData.email=payload.email;
+  userData.email = payload.email;
 
   const session = await mongoose.startSession();
 
@@ -164,7 +181,7 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
     userData.id = await generateAdminId();
 
     // create a user (transaction-1)
-    const newUser = await User.create([userData], { session }); 
+    const newUser = await User.create([userData], { session });
 
     //create a admin
     if (!newUser.length) {
@@ -191,7 +208,6 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
     throw new Error(err);
   }
 };
- 
 
 const getMe = async (userId: string, role: string) => {
   let result = null;

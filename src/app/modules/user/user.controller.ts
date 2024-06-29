@@ -5,14 +5,20 @@ import { catchAsync } from '../../utils/catchAsync';
 
 const createStudent = catchAsync(async (req, res) => {
 
+// console.log(req.file);//get file
+// // console.log(req.body.data);//get json data in text format
+// console.log( JSON.parse(req.body.data));//convert text data in json format
+
+
   const { password, student: studentData } = req.body;
-  const result = await UserServices.createStudentIntoDB(password, studentData);
+  const result = await UserServices.createStudentIntoDB(password, studentData,req.file);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Student is created successfully',
     data: result,
+ 
   });
 });
 
@@ -80,3 +86,6 @@ export const UserControllers = {
   changeStatus,
 
 };
+
+
+
