@@ -5,7 +5,6 @@ import { catchAsync } from '../../utils/catchAsync';
 
 //get students
 const getAllStudents = catchAsync(async (req, res) => {
-
   // console.log(req.query);
 
   const result = await StudentsServices.getAllStudentsFromDB(req.query);
@@ -14,7 +13,8 @@ const getAllStudents = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'students retrieved successfully',
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 
@@ -46,8 +46,11 @@ const deleteStudent = catchAsync(async (req, res) => {
 //delete student
 const updateStudent = catchAsync(async (req, res) => {
   const { studentId } = req.params;
-  const {student}=req.body;
-  const result = await StudentsServices.updateSingleStudentsFromDB(studentId,student);
+  const { student } = req.body;
+  const result = await StudentsServices.updateSingleStudentsFromDB(
+    studentId,
+    student,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -57,12 +60,9 @@ const updateStudent = catchAsync(async (req, res) => {
   });
 });
 
-
-
-
 export const StudentController = {
   getAllStudents,
   getSingleStudent,
   deleteStudent,
-  updateStudent
+  updateStudent,
 };

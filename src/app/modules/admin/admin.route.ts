@@ -1,7 +1,7 @@
 import express from 'express';
- 
+
 import { AdminControllers } from './admin.controller';
- 
+
 import validateRequest from '../../middleware/validateRequest';
 import { updateAdminValidationSchema } from './admin.validation';
 

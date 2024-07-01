@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { BloodGroup, Gender } from './admin.constant';
-import {  TAdmin, TUserName } from './admin.interface';
+import { TAdmin, TUserName } from './admin.interface';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -88,8 +88,6 @@ const adminSchema = new Schema<TAdmin>(
     },
   },
 );
-
- 
 
 // filter out deleted documents
 adminSchema.pre('find', function (next) {

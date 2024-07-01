@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
- 
+
 import {
   TEnrolledCourse,
   TEnrolledCourseMarks,

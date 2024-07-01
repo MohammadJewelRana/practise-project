@@ -20,8 +20,6 @@ const facultyNameSchema = new Schema<TFacultyName>({
   },
 });
 
- 
- 
 const facultySchema = new Schema<TFaculty>(
   {
     id: {
@@ -35,9 +33,9 @@ const facultySchema = new Schema<TFaculty>(
       unique: true,
       ref: 'User', //user er sathe angta lagbe
     },
-    designation:{
-        type:String,
-        required:[true,'Designation is required'],
+    designation: {
+      type: String,
+      required: [true, 'Designation is required'],
     },
     name: {
       type: facultyNameSchema,
@@ -78,21 +76,22 @@ const facultySchema = new Schema<TFaculty>(
       type: String,
       required: [true, 'Permanent address is required'],
     },
-    
+
     profileImg: { type: String },
     academicFaculty: {
-        type: Schema.Types.ObjectId,
-        ref: 'AcademicFaculty',
-      },
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicFaculty',
+    },
     academicDepartment: {
       type: Schema.Types.ObjectId,
+      required: [true, 'Academic department is required'],
       ref: 'AcademicDepartment',
     },
     isDeleted: {
       type: Boolean,
       default: false,
     },
-  }, 
+  },
   {
     toJSON: {
       virtuals: true,
@@ -100,6 +99,4 @@ const facultySchema = new Schema<TFaculty>(
   },
 );
 
- 
 export const Faculty = model<TFaculty>('Faculty', facultySchema);
- 

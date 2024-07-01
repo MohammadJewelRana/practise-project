@@ -4,8 +4,7 @@ import config from './config';
 import mongoose from 'mongoose';
 import seedSuperAdmin from './DB';
 
-let server:Server;
-
+let server: Server;
 
 async function main() {
   try {
@@ -13,10 +12,8 @@ async function main() {
 
     seedSuperAdmin();
 
-
-
     //here config.port comes from index.js file
-    server=app.listen(config.port, () => {
+    server = app.listen(config.port, () => {
       console.log(`University app listening on port ${config.port}`);
     });
   } catch (err) {
@@ -25,25 +22,24 @@ async function main() {
 }
 main();
 
-
-
 //for Asynchronous code
-process.on('unhandledRejection',()=>{
-  console.log(('unhandledRejection is detected,shutting down...'));
+process.on('unhandledRejection', () => {
+  console.log('unhandledRejection is detected,shutting down...');
+
   //kisu running thakle age seta off tarpor server off
-  if(server){
-    server.close(()=>{
-      process.exit(1)
-    })
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
   }
 
   //server e kisu running na thakle directly off
   process.exit(1);
-})
+});
 
 //for synchronous code
-process.on('uncaughtException',()=>{
-  console.log(('unhandledException is detected,shutting down...'));
+process.on('uncaughtException', () => {
+  console.log('unhandledException is detected,shutting down...');
   //server e kisu running na thakle directly off
   process.exit(1);
-})
+});

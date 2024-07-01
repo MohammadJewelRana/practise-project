@@ -24,15 +24,10 @@ const moduleRoutes = [
   { path: '/faculties', route: FacultyRoutes },
   { path: '/admins', route: AdminRoutes },
   { path: '/courses', route: CourseRoutes },
-  {path: '/semester-registrations',route: semesterRegistrationRoutes,},
-  {path: '/offered-courses',route: offeredCourseRoutes},
-  {path: '/auth',route: AuthRoutes},
-  {path: '/enrolled-courses',route: EnrolledCourseRoutes},
-
- 
-
-
-
+  { path: '/semester-registrations', route: semesterRegistrationRoutes },
+  { path: '/offered-courses', route: offeredCourseRoutes },
+  { path: '/auth', route: AuthRoutes },
+  { path: '/enrolled-courses', route: EnrolledCourseRoutes },
 ];
 
 //just looping the routes

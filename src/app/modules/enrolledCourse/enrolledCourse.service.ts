@@ -10,9 +10,7 @@ import { Course } from '../course/course.model';
 import { SemesterRegistration } from '../semesterRegistration/semesterRegistration.model';
 import { Faculty } from '../faculty/faculty.model';
 import { calculateGradeAndPoints } from './enrolledCourse.utils';
- 
- 
- 
+import QueryBuilder from '../../builders/QueryBuilder';
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -48,8 +46,6 @@ const createEnrolledCourseIntoDB = async (
     throw new AppError(httpStatus.CONFLICT, 'Student is already enrolled !');
   }
 
-  
-
   // check total credits exceeds maxCredit
   const course = await Course.findById(isOfferedCourseExists.course);
   const currentCredit = course?.credits;
@@ -60,10 +56,9 @@ const createEnrolledCourseIntoDB = async (
 
   const maxCredit = semesterRegistration?.maxCredit;
 
-
-  //get all enrolled courses and summation of all courses 
+  //get all enrolled courses and summation of all courses
   const enrolledCourses = await EnrolledCourse.aggregate([
-   //find all courses
+    //find all courses
     {
       $match: {
         semesterRegistration: isOfferedCourseExists.semesterRegistration,
@@ -72,10 +67,10 @@ const createEnrolledCourseIntoDB = async (
     },
     {
       $lookup: {
-        from: 'courses',//from which model we want data
-        localField: 'course',//current name field
+        from: 'courses', //from which model we want data
+        localField: 'course', //current name field
         foreignField: '_id',
-        as: 'enrolledCourseData',//new array name
+        as: 'enrolledCourseData', //new array name
       },
     },
     //divide into single data from the array
@@ -154,8 +149,6 @@ const createEnrolledCourseIntoDB = async (
   }
 };
 
-
-
 const updateEnrolledCourseMarksIntoDB = async (
   facultyId: string,
   payload: Partial<TEnrolledCourse>,
@@ -209,12 +202,20 @@ const updateEnrolledCourseMarksIntoDB = async (
       isCourseBelongToFaculty.courseMarks;
 
     const totalMarks =
+      // Math.ceil(classTest1 ) +
+      // Math.ceil(midTerm ) +
+      // Math.ceil(classTest2 ) +
+      // Math.ceil(finalTerm );
       Math.ceil(classTest1 * 0.1) +
       Math.ceil(midTerm * 0.3) +
       Math.ceil(classTest2 * 0.1) +
       Math.ceil(finalTerm * 0.5);
 
+    // console.log(totalMarks);
+
     const result = calculateGradeAndPoints(totalMarks);
+
+    // console.log(result);
 
     modifiedData.grade = result.grade;
     modifiedData.gradePoints = result.gradePoints;
@@ -238,10 +239,38 @@ const updateEnrolledCourseMarksIntoDB = async (
   return result;
 };
 
+const getMyEnrolledCoursesFromDB = async (
+  studentId: string,
+  query: Record<string, unknown>,
+) => {
+  const student = await Student.findOne({ id: studentId });
 
+  if (!student) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Student not found !');
+  }
 
+  const enrolledCourseQuery = new QueryBuilder(
+    EnrolledCourse.find({ student: student._id }).populate(
+      'semesterRegistration academicSemester academicFaculty academicDepartment offeredCourse course student faculty',
+    ),
+    query,
+  )
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await enrolledCourseQuery.modelQuery;
+  const meta = await enrolledCourseQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
 
 export const EnrolledCourseServices = {
   createEnrolledCourseIntoDB,
   updateEnrolledCourseMarksIntoDB,
+  getMyEnrolledCoursesFromDB,
 };

@@ -7,16 +7,15 @@ const getAllFaculty = catchAsync(async (req, res) => {
   // console.log('test',req.user);
 
   // console.log(req.cookies);
-  
 
- 
-  const result = await FacultyServices.getAllFacultyFromDB(req.body);
+  const result = await FacultyServices.getAllFacultyFromDB(req.query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: ' All faculties data retrieved  successfully',
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

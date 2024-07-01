@@ -8,10 +8,8 @@ import QueryBuilder from '../../builders/QueryBuilder';
 import { FacultySearchableFields } from './faculty.constant';
 
 const getAllFacultyFromDB = async (query: Record<string, unknown>) => {
- 
- 
   const facultyQuery = new QueryBuilder(
-    Faculty.find().populate('academicDepartment'),
+    Faculty.find().populate('academicDepartment academicFaculty'),
     query,
   )
     .search(FacultySearchableFields)
@@ -21,8 +19,12 @@ const getAllFacultyFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await facultyQuery.modelQuery;
+  const meta = await facultyQuery.countTotal();
 
-  return result;
+  return {
+    meta,
+    result,
+  };
 };
 
 const getSingleFacultyFromDB = async (facultyID: string) => {
@@ -52,7 +54,7 @@ const updateFacultyIntoDB = async (
 
   //when use self created id then use updateOne
   const result = await Faculty.findOneAndUpdate(
-    { id:facultyID },
+    { id: facultyID },
     { $set: modifiedUpdatedData },
     {
       new: true,

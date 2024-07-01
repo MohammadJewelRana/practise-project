@@ -4,41 +4,48 @@ import { UserServices } from './user.service';
 import { catchAsync } from '../../utils/catchAsync';
 
 const createStudent = catchAsync(async (req, res) => {
-
-// console.log(req.file);//get file
-// // console.log(req.body.data);//get json data in text format
-// console.log( JSON.parse(req.body.data));//convert text data in json format
-
+  // console.log(req.file);//get file
+  // // console.log(req.body.data);//get json data in text format
+  // console.log( JSON.parse(req.body.data));//convert text data in json format
 
   const { password, student: studentData } = req.body;
-  const result = await UserServices.createStudentIntoDB(password, studentData,req.file);
+  const result = await UserServices.createStudentIntoDB(
+    password,
+    studentData,
+    req.file,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Student is created successfully',
     data: result,
- 
   });
 });
 
-
-const createFaculty=catchAsync(async(req,res)=>{
-  const {password,faculty:facultyData}=req.body;
-  const result=await UserServices.createFacultyIntoDB(req.file,password,facultyData);
-  sendResponse(res,{
-    statusCode:httpStatus.OK,
-    success:true,
-    message:'Faculty is created successfully',
-    data:result
-  })
-})
-
+const createFaculty = catchAsync(async (req, res) => {
+  const { password, faculty: facultyData } = req.body;
+  const result = await UserServices.createFacultyIntoDB(
+    req.file,
+    password,
+    facultyData,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Faculty is created successfully',
+    data: result,
+  });
+});
 
 const createAdmin = catchAsync(async (req, res) => {
   const { password, admin: adminData } = req.body;
 
-  const result = await UserServices.createAdminIntoDB(req.file,password, adminData);
+  const result = await UserServices.createAdminIntoDB(
+    req.file,
+    password,
+    adminData,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -48,13 +55,9 @@ const createAdmin = catchAsync(async (req, res) => {
   });
 });
 
-
 const getMe = catchAsync(async (req, res) => {
-  
   const { userId, role } = req.user;
   const result = await UserServices.getMe(userId, role);
-
-  
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -63,7 +66,6 @@ const getMe = catchAsync(async (req, res) => {
     data: result,
   });
 });
-
 
 const changeStatus = catchAsync(async (req, res) => {
   const id = req.params.id;
@@ -84,8 +86,4 @@ export const UserControllers = {
   createAdmin,
   getMe,
   changeStatus,
-
 };
-
-
-

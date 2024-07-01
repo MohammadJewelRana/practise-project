@@ -57,7 +57,8 @@ const updateUserNameValidationSchema = z.object({
     .max(20)
     .refine((value) => /^[A-Z]/.test(value), {
       message: 'First Name must start with a capital letter',
-    }).optional(),
+    })
+    .optional(),
   middleName: z.string().optional(),
   lastName: z.string().optional(),
 });
@@ -88,7 +89,9 @@ export const updateStudentValidationSchema = z.object({
       email: z.string().email().optional(),
       contactNo: z.string().optional(),
       emergencyContactNo: z.string().optional(),
-      bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']).optional(),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
       presentAddress: z.string().optional(),
       permanentAddress: z.string().optional(),
       guardian: updateGuardianValidationSchema.optional(),

@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
- 
 
 import { Days } from './offeredCourse.constant';
 import { TOfferedCourse } from './offeredCourse.interface';

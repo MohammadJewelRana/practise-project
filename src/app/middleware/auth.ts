@@ -62,8 +62,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.FORBIDDEN, 'you are not authorized!!');
     }
 
-
-
     //authorization check from route
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError(

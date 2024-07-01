@@ -34,7 +34,6 @@ const updateUserNameValidationSchema = z.object({
 
 export const updateAdminValidationSchema = z.object({
   body: z.object({
-   
     admin: z.object({
       name: updateUserNameValidationSchema,
       designation: z.string().max(30).optional(),

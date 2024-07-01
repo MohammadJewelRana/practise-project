@@ -10,19 +10,13 @@ import { studentSearchableFields } from './student.constsant';
 
 //get
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
- 
   //query execute from the builders
   //pass parameter model(Student.find()   and query from req.query)
   const studentQuery = new QueryBuilder(
     Student.find()
-    .populate('user')
+      .populate('user')
       .populate('admissionSemester')
-      .populate({
-        path: 'academicDepartment',
-        populate: {
-          path: 'academicFaculty',
-        },
-      }),
+      .populate('academicDepartment academicFaculty'),
     query,
   )
     .search(studentSearchableFields)
@@ -30,14 +24,17 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     .sort()
     .paginate()
     .fields();
-  
 
   //model query te sob query build hoye gese tai await kore model query k call
   const result = await studentQuery.modelQuery;
-  return result;
+  const meta = await studentQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
- 
 //get single students
 const getSingleStudentsFromDB = async (stuID: string) => {
   const result = await Student.findById({ _id: stuID })

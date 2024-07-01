@@ -13,6 +13,8 @@ const loginUser = catchAsync(async (req, res) => {
   res.cookie('refreshToken', refreshToken, {
     secure: config.NODE_ENV === 'production',
     httpOnly: true,
+    sameSite: 'none', //frontend and backend different domain
+    maxAge: 1000 * 60 * 60 * 24 * 365, //cookie token set for 1 year
   });
 
   sendResponse(res, {
@@ -66,8 +68,8 @@ const forgetPassword = catchAsync(async (req, res) => {
 const resetPassword = catchAsync(async (req, res) => {
   const token = req.headers.authorization;
 
-  if(!token){
-    throw new AppError(httpStatus.FORBIDDEN,'Token is not found');
+  if (!token) {
+    throw new AppError(httpStatus.FORBIDDEN, 'Token is not found');
   }
   const result = await AuthService.resetPassword(req.body, token);
   sendResponse(res, {
@@ -78,12 +80,10 @@ const resetPassword = catchAsync(async (req, res) => {
   });
 });
 
-
 export const AuthControllers = {
   loginUser,
   changePassword,
   refreshToken,
   forgetPassword,
   resetPassword,
-
 };

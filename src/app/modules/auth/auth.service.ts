@@ -183,7 +183,6 @@ const refreshToken = async (token: string) => {
 };
 
 const forgetPassword = async (userId: string) => {
- 
   const user = await User.findOne({ id: userId });
   // console.log(user);
 
@@ -216,22 +215,19 @@ const forgetPassword = async (userId: string) => {
     '10m',
   );
 
-  
   // const resetUILink = `http://localhost:5000?id=${user.id}&token=${resetToken} `;
 
   const resetUILink = `${config.reset_password_ui_link}?id=${user.id}&token=${resetToken} `;
 
   sendEmail(user.email, resetUILink);
 
-  console.log( resetUILink);
+  console.log(resetUILink);
 };
 
- 
 const resetPassword = async (
   payload: { id: string; newPassword: string },
   token: string,
 ) => {
-
   const user = await User.findOne({ id: payload?.id });
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
@@ -245,12 +241,11 @@ const resetPassword = async (
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
   }
 
-//verify token
+  //verify token
   const decoded = jwt.verify(
     token,
     config.jwt_access_secret as string,
   ) as JwtPayload;
-
 
   //check token useriD and body id same or not
   if (payload.id !== decoded.userId) {

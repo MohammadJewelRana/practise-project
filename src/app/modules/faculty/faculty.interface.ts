@@ -1,6 +1,5 @@
 import { Types } from 'mongoose';
 
-
 export type TFacultyName = {
   firstName: string;
   middleName?: string;

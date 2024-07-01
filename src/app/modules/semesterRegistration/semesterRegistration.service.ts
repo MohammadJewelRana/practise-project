@@ -1,15 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
-import mongoose from 'mongoose';
- 
- 
- 
- 
+
 import { RegistrationStatus } from './semesterRegistration.constant';
 import { TSemesterRegistration } from './semesterRegistration.interface';
 import { SemesterRegistration } from './semesterRegistration.model';
 import { AppError } from '../../errors/AppError';
- 
+
 import QueryBuilder from '../../builders/QueryBuilder';
 import { AcademicSemester } from '../academinSemester/academicSemester.model';
 
@@ -30,7 +26,7 @@ const createSemesterRegistrationIntoDB = async (
     await SemesterRegistration.findOne({
       $or: [
         { status: 'UPCOMING' },
-        { status: "ONGOING" },
+        { status: 'ONGOING' },
         // { status: RegistrationStatus.UPCOMING },
         // { status: RegistrationStatus.ONGOING },
       ],
@@ -82,7 +78,12 @@ const getAllSemesterRegistrationsFromDB = async (
     .fields();
 
   const result = await semesterRegistrationQuery.modelQuery;
-  return result;
+  const meta = await semesterRegistrationQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 const getSingleSemesterRegistrationsFromDB = async (id: string) => {
@@ -156,9 +157,9 @@ const updateSemesterRegistrationIntoDB = async (
 };
 
 // const deleteSemesterRegistrationFromDB = async (id: string) => {
-//   /** 
+//   /**
 //   * Step1: Delete associated offered courses.
-//   * Step2: Delete semester registraton when the status is 
+//   * Step2: Delete semester registraton when the status is
 //   'UPCOMING'.
 //   **/
 
@@ -234,5 +235,5 @@ export const SemesterRegistrationService = {
   getAllSemesterRegistrationsFromDB,
   getSingleSemesterRegistrationsFromDB,
   updateSemesterRegistrationIntoDB,
-//   deleteSemesterRegistrationFromDB,
+  //   deleteSemesterRegistrationFromDB,
 };

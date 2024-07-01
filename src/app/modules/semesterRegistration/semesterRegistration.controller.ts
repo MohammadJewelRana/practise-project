@@ -1,8 +1,6 @@
-
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
- 
- 
+
 import { SemesterRegistrationService } from './semesterRegistration.service';
 import { catchAsync } from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
@@ -34,7 +32,8 @@ const getAllSemesterRegistrations = catchAsync(
       statusCode: httpStatus.OK,
       success: true,
       message: 'Semester Registration is retrieved successfully !',
-      data: result,
+      meta: result.meta,
+      data: result.result,
     });
   },
 );
@@ -95,5 +94,5 @@ export const SemesterRegistrationController = {
   getAllSemesterRegistrations,
   getSingleSemesterRegistration,
   updateSemesterRegistration,
-//   deleteSemesterRegistration,
+  //   deleteSemesterRegistration,
 };
